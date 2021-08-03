@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -32,6 +34,12 @@ public class Recipe {
 
     @Column(name = "cook_time")
     private LocalTime cooking_time;
+
+    @OneToMany(mappedBy = "recipe")
+    private List<Ingredient> ingredients;
+
+    @OneToMany(mappedBy = "recipe")
+    private List<Direction> directions;
 }
 
 //	`id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,

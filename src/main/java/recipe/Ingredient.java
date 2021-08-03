@@ -19,7 +19,8 @@ public class Ingredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long recipe_id;
+    @ManyToOne
+    private Recipe recipe;
 
     @Column(name = "ing_name")
     private String name;
