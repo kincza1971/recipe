@@ -8,6 +8,7 @@ import recipe.entities.Ingredient;
 
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -48,11 +49,21 @@ public class Recipe {
     @Column(name = "cook_time")
     private LocalTime cookingTime;
 
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany(mappedBy = "recipe",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Ingredient> ingredients;
 
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderColumn(name = "pos")
     private List<Direction> directions;
+
+    public void addDirection(Direction direction) {
+        if (directions == null) {
+            directions = new ArrayList<>();
+        }
+        directions.add(direction);
+    }
 }
 
 //	`id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,

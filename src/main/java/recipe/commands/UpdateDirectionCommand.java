@@ -1,0 +1,12 @@
+package recipe.commands;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class UpdateDirectionCommand {
+    private String direction;
+}

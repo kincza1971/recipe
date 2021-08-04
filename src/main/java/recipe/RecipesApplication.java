@@ -22,4 +22,5 @@ public class RecipesApplication {
         SpringApplication.run(RecipesApplication.class, args);
     }
 
+
 }

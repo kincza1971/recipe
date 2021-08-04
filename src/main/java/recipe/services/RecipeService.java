@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import recipe.commands.CreateRecipeCommand;
 import recipe.entities.Recipe;
-import recipe.RecipeRepository;
+import recipe.repos.RecipeRepository;
 import recipe.commands.UpdateRecipeCommand;
 
 import java.util.List;

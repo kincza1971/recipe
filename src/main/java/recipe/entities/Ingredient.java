@@ -1,8 +1,7 @@
 package recipe.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -20,6 +19,9 @@ public class Ingredient {
     private Long id;
 
     @ManyToOne
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @JsonBackReference
     private Recipe recipe;
 
     @Column(name = "ing_name")
@@ -31,6 +33,13 @@ public class Ingredient {
     @Column(name = "unit")
     @Enumerated(value = EnumType.STRING)
     private MeasurementUnit unit;
+
+    public Ingredient(Recipe recipe, String name, double quantity, MeasurementUnit unit) {
+        this.recipe = recipe;
+        this.name = name;
+        this.quantity = quantity;
+        this.unit = unit;
+    }
 }
 
 //CREATE TABLE `ingredients` (

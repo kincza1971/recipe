@@ -1,8 +1,7 @@
 package recipe.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -19,14 +18,21 @@ public class Direction {
     private Long id;
 
     @ManyToOne
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @JsonBackReference
     private Recipe recipe;
 
-    @OrderColumn
+    @Column(name = "pos")
     private int pos;
 
     @Column(name = "direction")
     private String directionText;
 
+    public Direction(Recipe recipe, String directionText) {
+        this.recipe = recipe;
+        this.directionText = directionText;
+    }
 }
 //CREATE TABLE `directions` (
 //	`dir_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
