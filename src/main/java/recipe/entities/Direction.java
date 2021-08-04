@@ -1,4 +1,4 @@
-package recipe;
+package recipe.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

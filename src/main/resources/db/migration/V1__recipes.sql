@@ -18,7 +18,7 @@ CREATE TABLE `ingredients` (
 	`unit` VARCHAR(50) NOT NULL COLLATE 'utf8mb3_hungarian_ci',
 	PRIMARY KEY (`id`) USING BTREE,
 	INDEX `fk_recipe` (`recipe_id`) USING BTREE,
-	CONSTRAINT `fk_recipe` FOREIGN KEY (`recipe_id`) REFERENCES `recipe`.`recipes` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION
+	CONSTRAINT `fk_recipe` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 COLLATE='utf8mb3_hungarian_ci'
 ENGINE=InnoDB
@@ -31,8 +31,8 @@ CREATE TABLE `directions` (
 	`pos` INT(10) UNSIGNED NOT NULL DEFAULT '0',
 	`direction` INT(10) UNSIGNED NOT NULL DEFAULT '0',
 	PRIMARY KEY (`dir_id`) USING BTREE,
-	INDEX `FK1_directions` (`reipe_id`) USING BTREE,
-	CONSTRAINT `FK1_directions` FOREIGN KEY (`reipe_id`) REFERENCES `recipe`.`recipes` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION
+	INDEX `FK1_directions` (`recipe_id`) USING BTREE,
+	CONSTRAINT `FK1_directions` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 COLLATE='utf8mb3_hungarian_ci'
 ENGINE=InnoDB

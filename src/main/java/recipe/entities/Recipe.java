@@ -1,13 +1,14 @@
-package recipe;
+package recipe.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import recipe.entities.Direction;
+import recipe.entities.Ingredient;
 
 import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -15,6 +16,15 @@ import java.util.Set;
 @Entity
 @Table(name="recipes")
 public class Recipe {
+
+
+    public Recipe(String name, RecipeType type, String description, LocalTime preparationTime, LocalTime cookingTime) {
+        this.name = name;
+        this.type = type;
+        this.description = description;
+        this.preparationTime = preparationTime;
+        this.cookingTime = cookingTime;
+    }
 
     public enum RecipeType {SOUP, DISH, DESSERT}
 
@@ -29,11 +39,14 @@ public class Recipe {
     @Enumerated(value = EnumType.STRING)
     private RecipeType type;
 
+    @Column(name = "recipe_desc")
+    private String description;
+
     @Column(name="prep_time")
     private LocalTime preparationTime;
 
     @Column(name = "cook_time")
-    private LocalTime cooking_time;
+    private LocalTime cookingTime;
 
     @OneToMany(mappedBy = "recipe")
     private List<Ingredient> ingredients;
