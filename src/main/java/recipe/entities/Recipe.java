@@ -33,10 +33,10 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="recipe_name")
+    @Column(name="recipe_name", nullable = false)
     private String name;
 
-    @Column(name = "recipe_type")
+    @Column(name = "recipe_type", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private RecipeType type;
 

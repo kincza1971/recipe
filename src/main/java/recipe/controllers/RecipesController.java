@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import recipe.commands.CreateRecipeCommand;
 import recipe.entities.Recipe;
+import recipe.entities.RecipeDTO;
 import recipe.services.RecipeService;
 import recipe.commands.UpdateRecipeCommand;
 
@@ -15,22 +16,22 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/recipes")
 @AllArgsConstructor
-public class RecipeController {
+public class RecipesController {
 
     private RecipeService service;
 
     @GetMapping
-    public List<Recipe> getRecipes() {
+    public List<RecipeDTO> getRecipes() {
         return service.getRecipes();
     }
 
     @PostMapping
-    public Recipe saveRecipe(@Valid @RequestBody CreateRecipeCommand command) {
+    public RecipeDTO saveRecipe(@Valid @RequestBody CreateRecipeCommand command) {
         return service.saveRecipe(command);
     }
 
     @PutMapping("/{id}")
-    public Recipe updateRecipeById(@PathVariable long id, @RequestBody UpdateRecipeCommand command) {
+    public RecipeDTO updateRecipeById(@PathVariable long id, @RequestBody UpdateRecipeCommand command) {
         return service.updateRecipeById(command, id);
     }
 

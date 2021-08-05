@@ -23,7 +23,7 @@ public class Direction {
     @JsonBackReference
     private Recipe recipe;
 
-    @Column(name = "pos")
+    @Column(name = "pos", nullable = false)
     private int pos;
 
     @Column(name = "direction")

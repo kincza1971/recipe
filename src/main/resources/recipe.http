@@ -9,10 +9,23 @@ Content-Type: application/json
   "cookingTime": [4,30]
 }
 
-
 ###
+
 GET http://localhost:8080/api/recipes
 Accept: application/json
+
+###
+
+PUT http://localhost:8080/api/recipes/3
+Content-Type: application/json
+
+{
+  "name": "Vaddisznó ragu erdei gombákkal, bogyókkal",
+  "type": "DISH",
+  "description": "Frissen szedett erdei gombákkal, vad gyükölcsökkel és bogyókkal párolt egytálétel",
+  "preparationTime": [2,30],
+  "cookingTime": [4,30]
+}
 
 ###
 
@@ -21,12 +34,96 @@ Accept: application/json
 
 ###
 
+DELETE http://localhost:8080/api/recipes
+Accept: application/json
 
-POST http://localhost:8080/api/recipes/1/directions
+###
+
+
+
+
+
+
+POST http://localhost:8080/api/recipes/2/directions
 Content-Type: application/json
 
 {
-  "directionText": "Lassú tűzön, saját levében pároljuk, szükség esetén kevés vízzel pótoljuk az elfőtt levet"
+  "directionText": "Elfőzzük a levet"
 }
 
 ###
+
+GET http://localhost:8080/api/recipes/2/directions
+Accept: application/json
+
+###
+
+
+DELETE http://localhost:8080/api/recipes/2/directions
+Accept: application/json
+
+###
+
+
+DELETE http://localhost:8080/api/recipes/directions
+Accept: application/json
+
+###
+
+PUT http://localhost:8080/api/recipes/directions/7
+Content-Type: application/json
+
+{
+  "direction": "Lassú tűzön, saját levében pároljuk, szükség esetén kevés vízzel pótoljuk az elfőtt levet"
+}
+
+###
+
+
+
+
+GET http://localhost:8080/api/recipes/2/ingredients
+Accept: application/json
+
+###
+
+POST http://localhost:8080/api/recipes/2/ingredients
+Content-Type: application/json
+
+{
+  "name": "Vöröshagyma",
+  "quantity": 1,
+  "unit": "KG"
+}
+
+###
+
+DELETE http://localhost:8080/api/recipes/ingredients
+Accept: application/json
+
+###
+
+DELETE http://localhost:8080/api/recipes/1/ingredients
+Accept: application/json
+
+###
+
+DELETE http://localhost:8080/api/recipes/ingredients/1
+Accept: application/json
+
+###
+
+PUT http://localhost:8080/api/recipes/ingredients/1
+Content-Type: application/json
+
+{
+  "direction": "Vöröshagyma",
+  "quantity": 1500,
+  "unit": "GRAM"
+}
+
+###
+
+
+
+

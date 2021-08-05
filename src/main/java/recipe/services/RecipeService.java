@@ -1,25 +1,32 @@
 package recipe.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import recipe.commands.CreateRecipeCommand;
 import recipe.entities.Recipe;
+import recipe.entities.RecipeDTO;
 import recipe.repos.RecipeRepository;
 import recipe.commands.UpdateRecipeCommand;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class RecipeService {
-    @Autowired
     private RecipeRepository repository;
+    private ModelMapper modelMapper;
 
-    public List<Recipe> getRecipes() {
-        return repository.findAll();
+
+    public List<RecipeDTO> getRecipes() {
+
+        List<Recipe> recipes= repository.findAll();
+        return recipes.stream().map(r -> modelMapper.map(r, RecipeDTO.class)).toList();
     }
 
-    public Recipe saveRecipe(CreateRecipeCommand command) {
+
+    public RecipeDTO saveRecipe(CreateRecipeCommand command) {
         Recipe recipe = new Recipe(
                 command.getName(),
                 command.getType(),
@@ -28,12 +35,13 @@ public class RecipeService {
                 command.getCookingTime()
         );
         repository.save(recipe);
-        return recipe;
+        return modelMapper.map(recipe, RecipeDTO.class);
     }
 
     @Transactional
-    public Recipe updateRecipeById(UpdateRecipeCommand command, long id) {
-        Recipe recipe= repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Cannot find recipe withthis id: " +id));
+    public RecipeDTO updateRecipeById(UpdateRecipeCommand command, long id) {
+        Recipe recipe= repository.
+                findById(id).orElseThrow(() -> new IllegalArgumentException("Cannot find recipe with this id: " +id));
 
         if (!command.getDescription().isBlank() && !recipe.getName().equals(command.getDescription())) {
             recipe.setDescription(command.getDescription());
@@ -46,7 +54,7 @@ public class RecipeService {
         if (command.getPreparationTime() != null && !recipe.getPreparationTime().equals(command.getPreparationTime())) {
             recipe.setPreparationTime(command.getPreparationTime());
         }
-        return recipe;
+        return modelMapper.map(recipe, RecipeDTO.class);
     }
 
     @Transactional
@@ -58,4 +66,5 @@ public class RecipeService {
     public void deleteAllRecipe() {
         repository.deleteAll();
     }
+
 }

@@ -4,7 +4,11 @@ import org.springframework.web.bind.annotation.*;
 import recipe.commands.CreateIngredientCommand;
 import recipe.commands.UpdateIngredientCommand;
 import recipe.entities.Ingredient;
+import recipe.entities.IngredientDTO;
 import recipe.services.IngredientsService;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/recipes")
@@ -16,8 +20,13 @@ public class IngredientsController {
         this.service = service;
     }
 
+    @GetMapping("/{recipeid}/ingredients")
+    public List<IngredientDTO> getInngredientsByRecipe(@PathVariable (name = "recipeid") long recipeId) {
+        return service.findIngredientsByRecipe(recipeId);
+    }
+
     @PostMapping("/{recipeid}/ingredients")
-    public Ingredient saveIngredient(@PathVariable(name = "recipeid") long recipeId, @RequestBody CreateIngredientCommand command) {
+    public IngredientDTO saveIngredient(@PathVariable(name = "recipeid") long recipeId, @Valid @RequestBody CreateIngredientCommand command) {
         return service.saveIngredient(recipeId, command);
     }
 
@@ -31,10 +40,15 @@ public class IngredientsController {
         service.deleteAllIngredientsByRecipe(recipeId);
     }
 
+    @DeleteMapping("/ingredients/{id}")
+    public void deleteIngredientById(@PathVariable long id) {
+        service.deleteIngredientById(id);
+    }
+
     @PutMapping("/ingredients/{id}")
-    public Ingredient updateIngredientById(@PathVariable long id, @RequestBody UpdateIngredientCommand command) {
+    public IngredientDTO updateIngredientById(@PathVariable long id, @RequestBody UpdateIngredientCommand command) {
         return service.updateIngredientById(id, command);
-    };
+    }
 
 
 
