@@ -1,13 +1,12 @@
 package recipe.controllers;
 
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import recipe.commands.CreateDirectionCommand;
 import recipe.commands.UpdateDirectionCommand;
-import recipe.commands.UpdateIngredientCommand;
 import recipe.entities.Direction;
-import recipe.entities.Ingredient;
 import recipe.services.DirectionsService;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/recipes")
@@ -20,7 +19,7 @@ public class DirectionsController {
     }
 
     @PostMapping("/{recipeid}/directions")
-    public Direction saveIngredient(@PathVariable(name = "recipeid") long recipeId, @RequestBody CreateDirectionCommand command) {
+    public Direction saveIngredient(@Valid @RequestBody CreateDirectionCommand command, @PathVariable(name = "recipeid") long recipeId) {
         return service.saveDirection(recipeId, command);
     }
 

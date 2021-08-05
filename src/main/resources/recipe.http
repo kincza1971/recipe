@@ -2,11 +2,31 @@ POST http://localhost:8080/api/recipes
 Content-Type: application/json
 
 {
-  "name": "Birkapörkölt karcagi módra",
+  "name": "Vaddisznó ragu erdei gombákkal, és bogyókkal",
   "type": "DISH",
-  "description": "Egytálétel karcagi módra, koviubival",
-  "preparationTime": [2,0],
+  "description": "Frissen szedett erdei gombákkal, és vad gyükölcsökkel, bogyókkal párolt egytálétel",
+  "preparationTime": [2,30],
   "cookingTime": [4,30]
+}
+
+
+###
+GET http://localhost:8080/api/recipes
+Accept: application/json
+
+###
+
+DELETE http://localhost:8080/api/recipes/1
+Accept: application/json
+
+###
+
+
+POST http://localhost:8080/api/recipes/1/directions
+Content-Type: application/json
+
+{
+  "directionText": "Lassú tűzön, saját levében pároljuk, szükség esetén kevés vízzel pótoljuk az elfőtt levet"
 }
 
 ###

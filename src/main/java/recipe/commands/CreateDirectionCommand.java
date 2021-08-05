@@ -3,15 +3,17 @@ package recipe.commands;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import recipe.entities.Recipe;
 
-import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateDirectionCommand {
 
+public class CreateDirectionCommand {
+    @NotBlank(message = "Text of direction cannot be empty, please give a direction")
     private String directionText;
 
 }

@@ -23,9 +23,8 @@ public class DirectionsService {
                 .findById(recipeId).orElseThrow(() -> new IllegalArgumentException("Cannot find recipe with this id: " + recipeId));
         Direction direction = new Direction(recipe, command.getDirectionText());
         recipe.addDirection(direction);
-        System.out.println(direction);
-        System.out.println(recipe);
-        return repository.save(direction);
+        repository.save(direction);
+        return direction;
     }
 
     @Transactional
