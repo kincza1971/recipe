@@ -16,7 +16,7 @@ public class IngredientDTO {
     @ToStringExclude
     @JsonBackReference
     private Recipe recipe;
-
+    private long id;
     private String name;
     private double quantity;
     private MeasurementUnit unit;

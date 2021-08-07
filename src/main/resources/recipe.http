@@ -16,7 +16,7 @@ Accept: application/json
 
 ###
 
-PUT http://localhost:8080/api/recipes/3
+PUT http://localhost:8080/api/recipes/11
 Content-Type: application/json
 
 {

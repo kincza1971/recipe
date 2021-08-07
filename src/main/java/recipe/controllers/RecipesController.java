@@ -2,10 +2,11 @@ package recipe.controllers;
 
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Problem;
 import recipe.commands.CreateRecipeCommand;
-import recipe.entities.Recipe;
 import recipe.entities.RecipeDTO;
 import recipe.services.RecipeService;
 import recipe.commands.UpdateRecipeCommand;
@@ -19,10 +20,15 @@ import java.util.List;
 public class RecipesController {
 
     private RecipeService service;
+    private EntityNotFoundExceptionHandler handler;
 
     @GetMapping
     public List<RecipeDTO> getRecipes() {
         return service.getRecipes();
+    }
+    @GetMapping("/{id}")
+    public RecipeDTO getRecipesById(@PathVariable long id) {
+        return service.getRecipeById(id);
     }
 
     @PostMapping
@@ -44,5 +50,12 @@ public class RecipesController {
     public void deleteAllRecipe() {
         service.deleteAllRecipe();
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Problem> handleNotFound(IllegalArgumentException iae) {
+        return handler.handleNotFound(iae,"/recipe/entity-not-found", "Entity Not Found");
+    }
+
 
 }

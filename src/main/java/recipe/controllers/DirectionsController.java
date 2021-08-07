@@ -1,9 +1,12 @@
 package recipe.controllers;
 
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Problem;
 import recipe.commands.CreateDirectionCommand;
 import recipe.commands.UpdateDirectionCommand;
-import recipe.entities.Direction;
 import recipe.entities.DirectionDTO;
 import recipe.services.DirectionsService;
 
@@ -12,13 +15,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/recipes")
+@AllArgsConstructor
 public class DirectionsController {
 
     private DirectionsService service;
+    private EntityNotFoundExceptionHandler handler;
 
-    public DirectionsController(DirectionsService service) {
-        this.service = service;
-    }
 
     @GetMapping("/{recipeid}/directions")
     public List<DirectionDTO> getDiretionsByRecipeId(@PathVariable(name = "recipeid") long recipeId) {
@@ -44,6 +46,13 @@ public class DirectionsController {
     public DirectionDTO updateIngredientById(@PathVariable long id, @RequestBody UpdateDirectionCommand command) {
         return service.updateDirectionById(id, command);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Problem> handleNotFound(IllegalArgumentException iae) {
+        return handler.handleNotFound(iae,"/recipe/entity-not-found", "Entity Not Found");
+    }
+
 
 
 

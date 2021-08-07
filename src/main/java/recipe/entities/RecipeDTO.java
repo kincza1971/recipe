@@ -19,6 +19,8 @@ public class RecipeDTO {
 
     public enum RecipeType {SOUP, DISH, DESSERT}
 
+    private long id;
+
     private String name;
 
     private RecipeType type;

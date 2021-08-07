@@ -28,7 +28,7 @@ public class CreateRecipeCommand {
     @Schema(description = "Shot description of food", example = "Könnyű fogás paleo diétához")
     private String description;
 
-    @Schema(description = "Estimated time of preparation eg: 2 hours and 30 minutes", example = "[2,30]")
+    @Schema(description = "Estimated time of preparation eg: 2 hours and 30 minutes", example = "02:30:00")
     private LocalTime preparationTime;
 
     @Schema(description = "Estimated time of cooking eg: 1 hours and 30 minutes", example = "[1,30]")

@@ -11,6 +11,7 @@ import recipe.repos.RecipeRepository;
 import recipe.commands.UpdateRecipeCommand;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -67,4 +68,8 @@ public class RecipeService {
         repository.deleteAll();
     }
 
+    public RecipeDTO getRecipeById(long id) {
+        Recipe recipe = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Cannot find recipe with this id: " + id));
+        return modelMapper.map(recipe,RecipeDTO.class);
+    }
 }
