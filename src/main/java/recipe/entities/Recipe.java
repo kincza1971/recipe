@@ -61,7 +61,7 @@ public class Recipe {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    @OrderColumn(name = "pos")
+
     private List<Direction> directions;
 
     public void addDirection(Direction direction) {

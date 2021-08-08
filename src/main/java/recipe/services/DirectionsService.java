@@ -27,7 +27,6 @@ public class DirectionsService {
         Recipe recipe = recipeRepository
                 .findById(recipeId).orElseThrow(() -> new IllegalArgumentException("Cannot find recipe with this id: " + recipeId));
         Direction direction = new Direction(recipe, command.getDirectionText());
-        recipe.addDirection(direction);
         repository.save(direction);
         return modelMapper.map(direction,DirectionDTO.class);
     }
@@ -41,12 +40,12 @@ public class DirectionsService {
     public void deleteAllDirectionsByRecipe(long recipeId) {
         Recipe recipe = recipeRepository
                 .findById(recipeId).orElseThrow(() -> new IllegalArgumentException("Cannot find recipe with this id: " + recipeId));
-        System.out.println(recipe);
         repository.deleteDirectionByRecipe(recipe);
     }
 
     @Transactional
     public DirectionDTO updateDirectionById(long id, UpdateDirectionCommand command) {
+        System.out.println(command);
         Direction direction = repository
                 .findById(id).orElseThrow(() -> new IllegalArgumentException("Cannot find direction by this id: " + id));
         if (!command.getDirection().isBlank() && !command.getDirection().equals(direction.getDirectionText())) {

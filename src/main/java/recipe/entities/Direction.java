@@ -15,6 +15,7 @@ public class Direction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "dir_id")
+    @OrderBy()
     private Long id;
 
     @ManyToOne
@@ -22,9 +23,6 @@ public class Direction {
     @EqualsAndHashCode.Exclude
     @JsonBackReference
     private Recipe recipe;
-
-    @Column(name = "pos", nullable = false)
-    private int pos;
 
     @Column(name = "direction")
     private String directionText;
