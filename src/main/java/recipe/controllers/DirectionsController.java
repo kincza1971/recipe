@@ -23,7 +23,7 @@ public class DirectionsController {
 
 
     @GetMapping("/{recipeid}/directions")
-    public List<DirectionDTO> getDiretionsByRecipeId(@PathVariable(name = "recipeid") long recipeId) {
+    public List<DirectionDTO> getDirectionsByRecipeId(@PathVariable(name = "recipeid") long recipeId) {
         return service.findDirectionsByRecipeId(recipeId);
     }
 

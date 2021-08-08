@@ -61,4 +61,5 @@ public class DirectionsService {
         List<Direction> directions = repository.findDirectionByRecipe(recipe);
         return directions.stream().map( d -> modelMapper.map(d,DirectionDTO.class)).toList();
     }
+
 }

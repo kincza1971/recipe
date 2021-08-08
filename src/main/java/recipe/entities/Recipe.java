@@ -49,12 +49,18 @@ public class Recipe {
     @Column(name = "cook_time")
     private LocalTime cookingTime;
 
-    @OneToMany(mappedBy = "recipe",
+    @OneToMany(
+            mappedBy = "recipe",
             cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            orphanRemoval = true
+    )
     private List<Ingredient> ingredients;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+            mappedBy = "recipe",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     @OrderColumn(name = "pos")
     private List<Direction> directions;
 

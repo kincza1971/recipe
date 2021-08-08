@@ -25,13 +25,13 @@ public class CreateRecipeCommand {
     @Schema(description = "Type of food accepted(SOUP, DISH, DESSERT)", example = "DISH")
     private Recipe.RecipeType type;
 
-    @Schema(description = "Shot description of food", example = "Könnyű fogás paleo diétához")
+    @Schema(description = "Short description of food", example = "Könnyű fogás paleo diétához")
     private String description;
 
-    @Schema(description = "Estimated time of preparation eg: 2 hours and 30 minutes", example = "02:30:00")
+    @Schema(description = "Estimated time of preparation eg: 2 hours and 30 minutes", implementation = String.class, example = "02:30:00")
     private LocalTime preparationTime;
 
-    @Schema(description = "Estimated time of cooking eg: 1 hours and 30 minutes", example = "[1,30]")
+    @Schema(description = "Estimated time of cooking eg: 1 hours and 30 minutes",implementation = String.class ,example = "01:30:00")
     private LocalTime cookingTime;
 
 }

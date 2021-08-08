@@ -6,7 +6,7 @@ CREATE TABLE `ingredients` (
                                `unit` VARCHAR(50) COLLATE 'utf8mb3_hungarian_ci',
                                PRIMARY KEY (`id`) USING BTREE,
                                INDEX `fk_recipe` (`recipe_id`) USING BTREE,
-                               CONSTRAINT `fk_recipe` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION
+                               CONSTRAINT `fk_recipe` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE
 )
     COLLATE='utf8mb3_hungarian_ci'
 ENGINE=InnoDB
