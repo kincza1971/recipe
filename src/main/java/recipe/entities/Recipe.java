@@ -64,12 +64,6 @@ public class Recipe {
 
     private List<Direction> directions;
 
-    public void addDirection(Direction direction) {
-        if (directions == null) {
-            directions = new ArrayList<>();
-        }
-        directions.add(direction);
-    }
 }
 
 //	`id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,

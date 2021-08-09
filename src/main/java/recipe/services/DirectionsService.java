@@ -61,4 +61,8 @@ public class DirectionsService {
         return directions.stream().map( d -> modelMapper.map(d,DirectionDTO.class)).toList();
     }
 
+    @Transactional
+    public void deleteDirectionById(long id) {
+        repository.deleteById(id);
+    }
 }

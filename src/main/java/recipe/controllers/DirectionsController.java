@@ -37,13 +37,19 @@ public class DirectionsController {
         service.deleteAllDirections();
     }
 
+    @DeleteMapping("/directions/{id}")
+    public void deleteAllDirections(@PathVariable long id) {
+
+        service.deleteDirectionById(id);
+    }
+
     @DeleteMapping("/{recipeid}/directions")
-    public void deleteAllIngredientsByRecipe(@PathVariable(name = "recipeid") long recipeId) {
+    public void deleteAllDirectionsByRecipe(@PathVariable(name = "recipeid") long recipeId) {
         service.deleteAllDirectionsByRecipe(recipeId);
     }
 
     @PutMapping("/directions/{id}")
-    public DirectionDTO updateIngredientById(@PathVariable long id, @RequestBody UpdateDirectionCommand command) {
+    public DirectionDTO updateDirectionById(@PathVariable long id, @RequestBody UpdateDirectionCommand command) {
         return service.updateDirectionById(id, command);
     }
 

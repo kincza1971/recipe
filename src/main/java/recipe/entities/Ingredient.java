@@ -16,6 +16,7 @@ public class Ingredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @OrderBy
     private Long id;
 
     @ManyToOne

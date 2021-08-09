@@ -1,5 +1,6 @@
 package recipe;
 
+import org.hibernate.hql.internal.classic.AbstractParameterInformation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 import recipe.commands.*;
-import recipe.entities.DirectionDTO;
-import recipe.entities.Ingredient;
-import recipe.entities.Recipe;
-import recipe.entities.RecipeDTO;
+import recipe.entities.*;
 
 import java.net.URI;
 import java.time.LocalTime;
@@ -96,12 +94,12 @@ public class RecipeTestRestTemplateIT {
         updateDirectionCommand3 = new UpdateDirectionCommand("A húst apró kockákra vágjuk - updated");
 
         createIngredientCommand1 = new CreateIngredientCommand("Alma",1.0, Ingredient.MeasurementUnit.KG);
-        createIngredientCommand1 = new CreateIngredientCommand("Banán",1200, Ingredient.MeasurementUnit.GRAM);
-        createIngredientCommand1 = new CreateIngredientCommand("Fokhagyma",2.5, Ingredient.MeasurementUnit.TABLESPOON);
+        createIngredientCommand2 = new CreateIngredientCommand("Banán",1200, Ingredient.MeasurementUnit.GRAM);
+        createIngredientCommand3 = new CreateIngredientCommand("Fokhagyma",2.5, Ingredient.MeasurementUnit.TABLESPOON);
 
         updateIngredientCommand1 = new UpdateIngredientCommand("Alma - updated",1.0, Ingredient.MeasurementUnit.KG);
-        updateIngredientCommand1 = new UpdateIngredientCommand("Banán - updated",1200, Ingredient.MeasurementUnit.GRAM);
-        updateIngredientCommand1 = new UpdateIngredientCommand("Fokhagyma - updated",2.5, Ingredient.MeasurementUnit.TABLESPOON);
+        updateIngredientCommand2 = new UpdateIngredientCommand("Banán - updated",1200, Ingredient.MeasurementUnit.GRAM);
+        updateIngredientCommand3 = new UpdateIngredientCommand("Fokhagyma - updated",2.5, Ingredient.MeasurementUnit.TABLESPOON);
 
     }
 
@@ -189,7 +187,10 @@ public class RecipeTestRestTemplateIT {
         DirectionDTO directionDTO2 = template.postForObject(API_MAP + recipe1.getId() + "/directions",createDirectionCommand2, DirectionDTO.class);
 
         List<DirectionDTO> directionDTOs =
-                template.exchange(API_MAP+ recipe1.getId()+"/directions",HttpMethod.GET, null,new ParameterizedTypeReference<List<DirectionDTO>>() {}
+                template.exchange(API_MAP+ recipe1.getId()+"/directions",
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<List<DirectionDTO>>() {}
                 ).getBody();
         List<String> directions = directionDTOs.stream().map(DirectionDTO::getDirectionText).collect(Collectors.toList());
 
@@ -223,9 +224,147 @@ public class RecipeTestRestTemplateIT {
         DirectionDTO directionDTO = template.postForObject(API_MAP + recipe1.getId() + "/directions",createDirectionCommand1, DirectionDTO.class);
         DirectionDTO directionDTO2 = template.postForObject(API_MAP + recipe1.getId() + "/directions",createDirectionCommand2, DirectionDTO.class);
 
+        template.delete(API_MAP + "directions/" + directionDTO.getId());
+
+        RecipeDTO recipeDTO = template.getForObject(API_MAP+recipe1.getId(),RecipeDTO.class);
+
+        assertEquals(recipeDTO.getDirections().size(),1);
+
+    }
+    @Test
+
+    void deleteDirectionByRecipe() {
+        RecipeDTO recipe1 = template.postForObject(API_MAP,createRecipeCommand2, RecipeDTO.class);
+
+        DirectionDTO directionDTO = template.postForObject(API_MAP + recipe1.getId() + "/directions",createDirectionCommand1, DirectionDTO.class);
+        DirectionDTO directionDTO2 = template.postForObject(API_MAP + recipe1.getId() + "/directions",createDirectionCommand2, DirectionDTO.class);
+
+        template.delete(API_MAP +  recipe1.getId()+ "/directions/");
+
+        RecipeDTO recipeDTO = template.getForObject(API_MAP+recipe1.getId(),RecipeDTO.class);
+        System.out.println(recipeDTO);
+
+        assertEquals(0,recipeDTO.getDirections().size());
+
+    }
+
+    @Test
+    void deleteAllDirections() {
+        RecipeDTO recipe1 = template.postForObject(API_MAP,createRecipeCommand2, RecipeDTO.class);
+
+        DirectionDTO directionDTO = template.postForObject(API_MAP + recipe1.getId() + "/directions",createDirectionCommand1, DirectionDTO.class);
+        DirectionDTO directionDTO2 = template.postForObject(API_MAP + recipe1.getId() + "/directions",createDirectionCommand2, DirectionDTO.class);
+
+        template.delete(API_MAP + "/directions/");
+
+        RecipeDTO recipeDTO = template.getForObject(API_MAP+recipe1.getId(),RecipeDTO.class);
+        System.out.println(recipeDTO);
+
+        assertEquals(0,recipeDTO.getDirections().size());
 
     }
 
 
+
+
+
+    @Test
+    void saveAndGetIngredientTest() {
+        RecipeDTO recipe1 = template.postForObject(API_MAP,createRecipeCommand3, RecipeDTO.class);
+
+        String url = API_MAP + recipe1.getId()+"/ingredients/";
+
+        IngredientDTO ingredientDTO = template.postForObject(url,createIngredientCommand1,IngredientDTO.class);
+        IngredientDTO ingredientDTO2 = template.postForObject(url,createIngredientCommand2,IngredientDTO.class);
+
+        List<IngredientDTO> ingredientDTOS = template.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<IngredientDTO>>() {}
+        ).getBody();
+
+        assertEquals(2,ingredientDTOS.size());
+
+    }
+
+    @Test
+    void updateIngredientTest() {
+        RecipeDTO recipe1 = template.postForObject(API_MAP,createRecipeCommand3, RecipeDTO.class);
+
+        String url = API_MAP + recipe1.getId()+"/ingredients/";
+
+        IngredientDTO ingredientDTO = template.postForObject(url,createIngredientCommand1,IngredientDTO.class);
+        IngredientDTO ingredientDTO2 = template.postForObject(url,createIngredientCommand2,IngredientDTO.class);
+
+        url = API_MAP + "/ingredients/"+ingredientDTO.getId();
+        template.put(url,updateIngredientCommand1,IngredientDTO.class);
+
+        url = API_MAP + "/ingredients/"+ingredientDTO2.getId();
+        template.put(url,updateIngredientCommand2,IngredientDTO.class);
+
+        url = API_MAP + recipe1.getId() + "/ingredients/";
+        List<IngredientDTO> ingredientDTOS = template.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<IngredientDTO>>() {}
+        ).getBody();
+
+        assertEquals(2,ingredientDTOS.size());
+        List<String> strings = ingredientDTOS.stream().map(IngredientDTO::getName).toList();
+        assertEquals(List.of("Alma - updated", "Banán - updated"), strings);
+
+    }
+
+    @Test
+    void deleteIngredientsByRecipe() {
+        RecipeDTO recipe1 = template.postForObject(API_MAP, createRecipeCommand3, RecipeDTO.class);
+
+        String url = API_MAP + recipe1.getId() + "/ingredients/";
+
+        template.postForObject(url, createIngredientCommand1, IngredientDTO.class);
+        template.postForObject(url, createIngredientCommand2, IngredientDTO.class);
+
+        url = API_MAP + recipe1.getId() + "/ingredients/";
+        template.delete(url);
+
+        List<IngredientDTO> ingredientDTOS = template.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<IngredientDTO>>() {
+                }
+        ).getBody();
+
+        assertEquals(0, ingredientDTOS.size());
+    }
+
+
+        @Test
+        void deleteAllIngredients() {
+            RecipeDTO recipe1 = template.postForObject(API_MAP,createRecipeCommand3, RecipeDTO.class);
+
+            String url = API_MAP + recipe1.getId()+"/ingredients/";
+
+            template.postForObject(url,createIngredientCommand1,IngredientDTO.class);
+            template.postForObject(url,createIngredientCommand2,IngredientDTO.class);
+
+            url =API_MAP + "ingredients/";
+            template.delete(url);
+
+            url=API_MAP + recipe1.getId() + " /ingredients/";
+            List<IngredientDTO> ingredientDTOS = template.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<IngredientDTO>>() {}
+            ).getBody();
+
+            assertEquals(0,ingredientDTOS.size());
+
+
+
+        }
 
 }

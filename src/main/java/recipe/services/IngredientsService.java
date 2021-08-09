@@ -46,7 +46,7 @@ public class IngredientsService {
     public void deleteAllIngredientsByRecipe(long recipeId) throws IllegalArgumentException {
         Recipe recipe = recipeRepository
                 .findById(recipeId).orElseThrow(() -> new IllegalArgumentException("Cannot find recipe with this id: " + recipeId));
-        ingredientsRepository.deleteByRecipe(recipe);
+        ingredientsRepository.deleteByRecipeId(recipe.getId());
     }
 
     @Transactional
