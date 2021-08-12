@@ -19,7 +19,6 @@ import java.util.List;
 public class IngredientsController {
 
     private IngredientsService service;
-    private EntityNotFoundExceptionHandler handler;
 
     @GetMapping("/{recipeid}/ingredients")
     public List<IngredientDTO> getInngredientsByRecipe(@PathVariable (name = "recipeid") long recipeId) {
@@ -49,12 +48,6 @@ public class IngredientsController {
     @PutMapping("/ingredients/{id}")
     public IngredientDTO updateIngredientById(@PathVariable long id, @RequestBody UpdateIngredientCommand command) {
         return service.updateIngredientById(id, command);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<Problem> handleNotFound(IllegalArgumentException iae) {
-        return handler.handleNotFound(iae,"/recipe/entity-not-found", "Entity Not Found");
     }
 
 

@@ -20,7 +20,6 @@ import java.util.List;
 public class RecipesController {
 
     private RecipeService service;
-    private EntityNotFoundExceptionHandler handler;
 
     @GetMapping
     public List<RecipeDTO> getRecipes() {
@@ -49,12 +48,6 @@ public class RecipesController {
     @DeleteMapping
     public void deleteAllRecipe() {
         service.deleteAllRecipe();
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<Problem> handleNotFound(IllegalArgumentException iae) {
-        return handler.handleNotFound(iae,"/recipe/entity-not-found", "Entity Not Found");
     }
 
 

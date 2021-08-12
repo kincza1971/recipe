@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import recipe.commands.CreateRecipeCommand;
 import recipe.entities.Recipe;
 import recipe.entities.RecipeDTO;
+import recipe.exceptions.EntityNotFoundException;
 import recipe.repos.RecipeRepository;
 import recipe.commands.UpdateRecipeCommand;
 
@@ -16,6 +17,8 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class RecipeService {
+    public static final String RECIPE_NOT_FOUND = "Recipe/Not-found";
+    public static final String RECIPE_NOT_FOUND_DETAIL = "Cannot find recipe with this id: ";
     private RecipeRepository repository;
     private ModelMapper modelMapper;
 
@@ -42,7 +45,7 @@ public class RecipeService {
     @Transactional
     public RecipeDTO updateRecipeById(UpdateRecipeCommand command, long id) {
         Recipe recipe= repository.
-                findById(id).orElseThrow(() -> new IllegalArgumentException("Cannot find recipe with this id: " +id));
+                findById(id).orElseThrow(() -> new EntityNotFoundException(RECIPE_NOT_FOUND, RECIPE_NOT_FOUND_DETAIL + id));
 
         if (!command.getDescription().isBlank() && !recipe.getName().equals(command.getDescription())) {
             recipe.setDescription(command.getDescription());
@@ -69,7 +72,7 @@ public class RecipeService {
     }
 
     public RecipeDTO getRecipeById(long id) {
-        Recipe recipe = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Cannot find recipe with this id: " + id));
+        Recipe recipe = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(RECIPE_NOT_FOUND, RECIPE_NOT_FOUND_DETAIL + id));
         return modelMapper.map(recipe,RecipeDTO.class);
     }
 }

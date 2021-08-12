@@ -19,7 +19,6 @@ import java.util.List;
 public class DirectionsController {
 
     private DirectionsService service;
-    private EntityNotFoundExceptionHandler handler;
 
 
     @GetMapping("/{recipeid}/directions")
@@ -52,14 +51,6 @@ public class DirectionsController {
     public DirectionDTO updateDirectionById(@PathVariable long id, @RequestBody UpdateDirectionCommand command) {
         return service.updateDirectionById(id, command);
     }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<Problem> handleNotFound(IllegalArgumentException iae) {
-        return handler.handleNotFound(iae,"/recipe/entity-not-found", "Entity Not Found");
-    }
-
-
 
 
 }

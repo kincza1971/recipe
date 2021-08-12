@@ -9,6 +9,7 @@ import recipe.commands.UpdateDirectionCommand;
 import recipe.entities.Direction;
 import recipe.entities.DirectionDTO;
 import recipe.entities.Recipe;
+import recipe.exceptions.EntityNotFoundException;
 import recipe.repos.DirectionsRepository;
 import recipe.repos.RecipeRepository;
 
@@ -17,6 +18,10 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class DirectionsService {
+    public static final String RECIPE_NOT_FOUND = "Cannot find recipe with this id: ";
+    public static final String DIRECTION_NOT_FOUND = "Cannot find direction by this id: ";
+    public static final String RECIPE_URI = "Recipe/Not-found";
+    public static final String DIRECTION_URI = "Recipe/Direction/Not-found";
     private DirectionsRepository repository;
     private RecipeRepository recipeRepository;
     private ModelMapper modelMapper;
@@ -25,7 +30,7 @@ public class DirectionsService {
     @Transactional
     public DirectionDTO saveDirection(long recipeId, CreateDirectionCommand command) {
         Recipe recipe = recipeRepository
-                .findById(recipeId).orElseThrow(() -> new IllegalArgumentException("Cannot find recipe with this id: " + recipeId));
+                .findById(recipeId).orElseThrow(() -> new EntityNotFoundException(RECIPE_URI, RECIPE_NOT_FOUND + recipeId));
         Direction direction = new Direction(recipe, command.getDirectionText());
         repository.save(direction);
         return modelMapper.map(direction,DirectionDTO.class);
@@ -39,7 +44,7 @@ public class DirectionsService {
     @Transactional
     public void deleteAllDirectionsByRecipe(long recipeId) {
         Recipe recipe = recipeRepository
-                .findById(recipeId).orElseThrow(() -> new IllegalArgumentException("Cannot find recipe with this id: " + recipeId));
+                .findById(recipeId).orElseThrow(() -> new EntityNotFoundException(RECIPE_URI, RECIPE_NOT_FOUND + recipeId));
         repository.deleteDirectionByRecipe(recipe);
     }
 
@@ -47,7 +52,7 @@ public class DirectionsService {
     public DirectionDTO updateDirectionById(long id, UpdateDirectionCommand command) {
         System.out.println(command);
         Direction direction = repository
-                .findById(id).orElseThrow(() -> new IllegalArgumentException("Cannot find direction by this id: " + id));
+                .findById(id).orElseThrow(() -> new EntityNotFoundException(DIRECTION_URI, DIRECTION_NOT_FOUND + id));
         if (!command.getDirection().isBlank() && !command.getDirection().equals(direction.getDirectionText())) {
             direction.setDirectionText(command.getDirection());
         }
@@ -56,7 +61,7 @@ public class DirectionsService {
 
     public List<DirectionDTO> findDirectionsByRecipeId(long recipeId) {
         Recipe recipe = recipeRepository
-                .findById(recipeId).orElseThrow(() -> new IllegalArgumentException("Cannot find recipe with this id: " + recipeId));
+                .findById(recipeId).orElseThrow(() -> new EntityNotFoundException(RECIPE_URI, RECIPE_NOT_FOUND + recipeId));
         List<Direction> directions = repository.findDirectionByRecipe(recipe);
         return directions.stream().map( d -> modelMapper.map(d,DirectionDTO.class)).toList();
     }

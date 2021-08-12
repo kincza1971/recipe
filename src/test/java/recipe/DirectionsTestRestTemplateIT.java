@@ -1,6 +1,5 @@
 package recipe;
 
-import org.hibernate.hql.internal.classic.AbstractParameterInformation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(statements = "delete from recipes")
-public class RecipeTestRestTemplateIT {
+
+public class DirectionsTestRestTemplateIT {
 
     public static final String API_MAP = "/api/recipes/";
     @Autowired
@@ -101,63 +101,6 @@ public class RecipeTestRestTemplateIT {
         updateIngredientCommand2 = new UpdateIngredientCommand("Banán - updated",1200, Ingredient.MeasurementUnit.GRAM);
         updateIngredientCommand3 = new UpdateIngredientCommand("Fokhagyma - updated",2.5, Ingredient.MeasurementUnit.TABLESPOON);
 
-    }
-
-    @Test
-    void createRecipeTest() {
-        RecipeDTO recipe1 = template.postForObject(API_MAP,createRecipeCommand1, RecipeDTO.class);
-        assertEquals("Borsóleves",recipe1.getName());
-    }
-
-    @Test
-    void findRecipeTest() {
-        RecipeDTO recipe1 = template.postForObject(API_MAP,createRecipeCommand2, RecipeDTO.class);
-        RecipeDTO recipeDTO = template.getForObject(API_MAP+recipe1.getId(),RecipeDTO.class);
-        assertEquals(recipe1.getName(),recipeDTO.getName());
-    }
-
-    @Test
-    void findRecipeNotFoundTest() {
-        Problem result = template.getForObject(API_MAP+"0", Problem.class);
-        assertEquals(Status.NOT_FOUND, result.getStatus());
-        assertEquals(URI.create("/recipe/entity-not-found"), result.getType());
-    }
-
-    @Test
-    void PutRecipeTest() {
-        RecipeDTO recipe1 = template.postForObject(API_MAP,createRecipeCommand3, RecipeDTO.class);
-        template.put(API_MAP+recipe1.getId(),updateRecipeCommand2);
-        RecipeDTO recipeDTO = template.getForObject(API_MAP+recipe1.getId(),RecipeDTO.class);
-        assertEquals("Description changed 2",recipeDTO.getDescription());
-    }
-
-    @Test
-    void deleteRecipeByIdTest() {
-        RecipeDTO recipe1 = template.postForObject(API_MAP,createRecipeCommand2, RecipeDTO.class);
-        RecipeDTO recipe2 = template.postForObject(API_MAP,createRecipeCommand1, RecipeDTO.class);
-
-        List<RecipeDTO> recipeDTOS=  template.exchange(API_MAP, HttpMethod.GET, null, new ParameterizedTypeReference<List<RecipeDTO>>() {}).getBody();
-        assertEquals(recipeDTOS.size(),2);
-
-
-        template.delete(API_MAP+recipe1.getId());
-
-        recipeDTOS=  template.exchange(API_MAP, HttpMethod.GET, null, new ParameterizedTypeReference<List<RecipeDTO>>() {}).getBody();
-        assertEquals(recipeDTOS.size(),1);
-    }
-    @Test
-
-    void deleteByAllRecipeTest() {
-        RecipeDTO recipe1 = template.postForObject(API_MAP,createRecipeCommand2, RecipeDTO.class);
-        RecipeDTO recipe2 = template.postForObject(API_MAP,createRecipeCommand1, RecipeDTO.class);
-        List<RecipeDTO> recipeDTOS=
-                template.exchange(API_MAP, HttpMethod.GET, null, new ParameterizedTypeReference<List<RecipeDTO>>() {}).getBody();
-        assertEquals(recipeDTOS.size(),2);
-        template.delete(API_MAP);
-
-        recipeDTOS=  template.exchange(API_MAP, HttpMethod.GET, null, new ParameterizedTypeReference<List<RecipeDTO>>() {
-        }).getBody();
-        assertEquals(recipeDTOS.size(),0);
     }
 
 
@@ -264,107 +207,5 @@ public class RecipeTestRestTemplateIT {
 
     }
 
-
-
-
-
-    @Test
-    void saveAndGetIngredientTest() {
-        RecipeDTO recipe1 = template.postForObject(API_MAP,createRecipeCommand3, RecipeDTO.class);
-
-        String url = API_MAP + recipe1.getId()+"/ingredients/";
-
-        IngredientDTO ingredientDTO = template.postForObject(url,createIngredientCommand1,IngredientDTO.class);
-        IngredientDTO ingredientDTO2 = template.postForObject(url,createIngredientCommand2,IngredientDTO.class);
-
-        List<IngredientDTO> ingredientDTOS = template.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<IngredientDTO>>() {}
-        ).getBody();
-
-        assertEquals(2,ingredientDTOS.size());
-
-    }
-
-    @Test
-    void updateIngredientTest() {
-        RecipeDTO recipe1 = template.postForObject(API_MAP,createRecipeCommand3, RecipeDTO.class);
-
-        String url = API_MAP + recipe1.getId()+"/ingredients/";
-
-        IngredientDTO ingredientDTO = template.postForObject(url,createIngredientCommand1,IngredientDTO.class);
-        IngredientDTO ingredientDTO2 = template.postForObject(url,createIngredientCommand2,IngredientDTO.class);
-
-        url = API_MAP + "/ingredients/"+ingredientDTO.getId();
-        template.put(url,updateIngredientCommand1,IngredientDTO.class);
-
-        url = API_MAP + "/ingredients/"+ingredientDTO2.getId();
-        template.put(url,updateIngredientCommand2,IngredientDTO.class);
-
-        url = API_MAP + recipe1.getId() + "/ingredients/";
-        List<IngredientDTO> ingredientDTOS = template.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<IngredientDTO>>() {}
-        ).getBody();
-
-        assertEquals(2,ingredientDTOS.size());
-        List<String> strings = ingredientDTOS.stream().map(IngredientDTO::getName).toList();
-        assertEquals(List.of("Alma - updated", "Banán - updated"), strings);
-
-    }
-
-    @Test
-    void deleteIngredientsByRecipe() {
-        RecipeDTO recipe1 = template.postForObject(API_MAP, createRecipeCommand3, RecipeDTO.class);
-
-        String url = API_MAP + recipe1.getId() + "/ingredients/";
-
-        template.postForObject(url, createIngredientCommand1, IngredientDTO.class);
-        template.postForObject(url, createIngredientCommand2, IngredientDTO.class);
-
-        url = API_MAP + recipe1.getId() + "/ingredients/";
-        template.delete(url);
-
-        List<IngredientDTO> ingredientDTOS = template.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<IngredientDTO>>() {
-                }
-        ).getBody();
-
-        assertEquals(0, ingredientDTOS.size());
-    }
-
-
-        @Test
-        void deleteAllIngredients() {
-            RecipeDTO recipe1 = template.postForObject(API_MAP,createRecipeCommand3, RecipeDTO.class);
-
-            String url = API_MAP + recipe1.getId()+"/ingredients/";
-
-            template.postForObject(url,createIngredientCommand1,IngredientDTO.class);
-            template.postForObject(url,createIngredientCommand2,IngredientDTO.class);
-
-            url =API_MAP + "ingredients/";
-            template.delete(url);
-
-            url=API_MAP + recipe1.getId() + " /ingredients/";
-            List<IngredientDTO> ingredientDTOS = template.exchange(
-                    url,
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<List<IngredientDTO>>() {}
-            ).getBody();
-
-            assertEquals(0,ingredientDTOS.size());
-
-
-
-        }
 
 }

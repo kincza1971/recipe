@@ -31,8 +31,8 @@ public class RecipeDTO {
 
     private LocalTime cookingTime;
 
-    private List<Ingredient> ingredients;
+    private List<IngredientDTO> ingredients;
 
-    private List<Direction> directions;
+    private List<DirectionDTO> directions;
 
 }

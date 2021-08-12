@@ -10,6 +10,7 @@ import recipe.commands.UpdateIngredientCommand;
 import recipe.entities.Ingredient;
 import recipe.entities.IngredientDTO;
 import recipe.entities.Recipe;
+import recipe.exceptions.EntityNotFoundException;
 import recipe.repos.IngredientsRepository;
 import recipe.repos.RecipeRepository;
 
@@ -21,6 +22,10 @@ import java.util.List;
 @AllArgsConstructor
 public class IngredientsService {
 
+    public static final String RECIPE_URI = "Recipe/Not-found";
+    public static final String INGREDIENT_URI = "Recipe/Ingredient/Not-found";
+    public static final String RECIPE_NOT_FOUND = "Cannot find recipe with this id: ";
+    public static final String INGREDIENT_NOT_FOUND = "Cannot find ingredient with this id: ";
     private RecipeRepository recipeRepository;
 
     private IngredientsRepository ingredientsRepository;
@@ -31,7 +36,7 @@ public class IngredientsService {
     @Transactional
     public IngredientDTO saveIngredient(long recipeId, CreateIngredientCommand command) {
         Recipe recipe = recipeRepository
-                .findById(recipeId).orElseThrow(() -> new IllegalArgumentException("Cannot find recipe with this id: " + recipeId));
+                .findById(recipeId).orElseThrow(() -> new EntityNotFoundException(RECIPE_URI, RECIPE_NOT_FOUND + recipeId));
         Ingredient ingredient = new Ingredient(recipe, command.getName(), command.getQuantity(), command.getUnit());
         ingredientsRepository.save(ingredient);
         return modelMapper.map(ingredient, IngredientDTO.class);
@@ -45,14 +50,14 @@ public class IngredientsService {
     @Transactional
     public void deleteAllIngredientsByRecipe(long recipeId) throws IllegalArgumentException {
         Recipe recipe = recipeRepository
-                .findById(recipeId).orElseThrow(() -> new IllegalArgumentException("Cannot find recipe with this id: " + recipeId));
+                .findById(recipeId).orElseThrow(() -> new EntityNotFoundException(RECIPE_URI,RECIPE_NOT_FOUND + recipeId));
         ingredientsRepository.deleteByRecipeId(recipe.getId());
     }
 
     @Transactional
     public IngredientDTO updateIngredientById(long id, UpdateIngredientCommand command) throws IllegalArgumentException{
         Ingredient ingredient = ingredientsRepository
-                .findById(id).orElseThrow(() -> new IllegalArgumentException("Cannot find ingredient with this id: " + id));
+                .findById(id).orElseThrow(() ->new EntityNotFoundException(INGREDIENT_URI, INGREDIENT_NOT_FOUND + id));
         if (command.getName() != null && !ingredient.getName().equals(command.getName())) {
             ingredient.setName(command.getName());
         }
@@ -70,7 +75,7 @@ public class IngredientsService {
     }
 
     public List<IngredientDTO> findIngredientsByRecipe(long recipeId) {
-        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new IllegalArgumentException("Cannot find recipe with this id: " + recipeId));
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new EntityNotFoundException(RECIPE_URI, RECIPE_NOT_FOUND + recipeId));
         List<Ingredient> ingredients = ingredientsRepository.findIngredientByRecipe(recipe);
         return ingredients.stream().map(i -> modelMapper.map(i, IngredientDTO.class)).toList();
     }
