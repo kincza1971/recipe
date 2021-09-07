@@ -3,12 +3,9 @@ package recipe.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import recipe.entities.Direction;
-import recipe.entities.Ingredient;
 
 import javax.persistence.*;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
